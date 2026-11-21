@@ -17,7 +17,14 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - run: npx electron-builder --mac dmg --x64 --arm64 --publish never
+      - name: DMG Apple Silicon
+        run: npx electron-builder --mac dmg --arm64 --publish never
+      - name: Démonter le disque
+        run: |
+          hdiutil detach /Volumes/Daliad -force || true
+          sleep 5
+      - name: DMG Intel
+        run: npx electron-builder --mac dmg --x64 --publish never
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: desktop-${{ github.run_number }}
